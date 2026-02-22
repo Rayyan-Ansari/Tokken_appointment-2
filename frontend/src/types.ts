@@ -112,10 +112,13 @@ export interface DoctorDetails {
   email: string;
   fullName: string;
   phone: string;
+  dob?: string;
+  sex?: 'M' | 'F' | 'O';
   specialization: string;
   qualification: string;
   yearsExperience: number;
   licenseNumber: string;
+  licenseDocumentPath?: string;
   createdAt: string;
 }
 
@@ -124,6 +127,9 @@ export interface PatientDetails {
   email: string;
   fullName: string;
   phone: string;
+  dob?: string;
+  sex?: 'M' | 'F' | 'O';
+  address?: string;
   createdAt: string;
 }
 

@@ -4,14 +4,14 @@ import { authMiddleware, requirePatient } from '@/lib/auth';
 
 const router = express.Router();
 
-// All token routes require patient authentication
+// All token routes require authentication
 router.use(authMiddleware);
-router.use(requirePatient);
 
-// Book a token
-router.post('/book', tokenController.bookToken);
+// Patient-specific routes
+router.post('/book', requirePatient, tokenController.bookToken);
+router.get('/my', requirePatient, tokenController.getMyTokens);
 
-// Get patient's tokens
-router.get('/my', tokenController.getMyTokens);
+// Session tokens (for doctors to view their queue)
+router.get('/session/:sessionId', tokenController.getSessionTokens);
 
 export { router as tokenRoutes };

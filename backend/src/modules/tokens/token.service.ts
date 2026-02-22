@@ -336,6 +336,45 @@ class TokenService {
       myToken
     };
   }
+
+  // Get all tokens for a session (for doctors)
+  async getSessionTokens(sessionId: string) {
+    const sessionIdBigInt = BigInt(sessionId);
+
+    const tokens = await prisma.token.findMany({
+      where: {
+        sessionId: sessionIdBigInt
+      },
+      include: {
+        patient: {
+          select: {
+            id: true,
+            fullName: true,
+            phone: true
+          }
+        }
+      },
+      orderBy: {
+        tokenNo: 'asc'
+      }
+    });
+
+    return tokens.map(token => ({
+      id: token.id.toString(),
+      tokenNo: token.tokenNo,
+      status: token.status,
+      bookedAt: token.bookedAt,
+      calledAt: token.calledAt,
+      servedAt: token.servedAt,
+      canceledAt: token.canceledAt,
+      noShowAt: token.noShowAt,
+      patient: {
+        id: token.patient.id.toString(),
+        fullName: token.patient.fullName,
+        phone: token.patient.phone
+      }
+    }));
+  }
 }
 
 export const tokenService = new TokenService();

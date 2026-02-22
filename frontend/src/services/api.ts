@@ -97,6 +97,11 @@ class ApiClient {
         return response.data;
     }
 
+    async updateProfile(data: any): Promise<ApiResponse> {
+        const response = await this.client.put<ApiResponse>('/api/auth/profile', data);
+        return response.data;
+    }
+
     // Doctor APIs
     async getDoctors(): Promise<ApiResponse<DoctorsListResponse>> {
         const response = await this.client.get<ApiResponse<DoctorsListResponse>>('/api/doctors');
@@ -141,6 +146,11 @@ class ApiClient {
 
     async getMyTokens(): Promise<ApiResponse<Token[]>> {
         const response = await this.client.get<ApiResponse<Token[]>>('/api/tokens/my');
+        return response.data;
+    }
+
+    async getSessionTokens(sessionId: string): Promise<ApiResponse<Token[]>> {
+        const response = await this.client.get<ApiResponse<Token[]>>(`/api/tokens/session/${sessionId}`);
         return response.data;
     }
 

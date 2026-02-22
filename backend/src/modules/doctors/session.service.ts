@@ -227,12 +227,61 @@ class SessionService {
         throw new Error('Session is not active');
       }
 
-      // Find the next token to call
-      const nextTokenNo = session.currentTokenNo + 1;
+      // FIRST: Mark the current token as SERVED (if there is one)
+      if (session.currentTokenNo > 0) {
+        const currentToken = await tx.token.findFirst({
+          where: {
+            sessionId: session.id,
+            tokenNo: session.currentTokenNo,
+            status: 'CALLED'
+          },
+          include: {
+            patient: {
+              select: {
+                id: true,
+                fullName: true
+              }
+            }
+          }
+        });
 
-      if (nextTokenNo > session.maxTokenNo) {
-        throw new Error('No more tokens to call');
+        if (currentToken) {
+          // Mark as SERVED
+          await tx.token.update({
+            where: { id: currentToken.id },
+            data: {
+              status: 'SERVED',
+              servedAt: new Date()
+            }
+          });
+
+          // Log the served action
+          await tx.tokenLog.create({
+            data: {
+              tokenId: currentToken.id,
+              sessionId: session.id,
+              doctorId: doctorIdBigInt,
+              patientId: currentToken.patient.id,
+              action: 'SERVED',
+              meta: {
+                tokenNo: currentToken.tokenNo,
+                patientName: currentToken.patient.fullName,
+                servedAt: new Date().toISOString()
+              }
+            }
+          });
+
+          // Emit event to patient
+          socketManager.emitToUser(currentToken.patient.id.toString(), 'mytoken:updated', {
+            tokenId: currentToken.id.toString(),
+            status: 'SERVED',
+            servedAt: new Date().toISOString()
+          });
+        }
       }
+
+      // SECOND: Find the next token to call
+      const nextTokenNo = session.currentTokenNo + 1;
 
       // Find the token with the next number that's waiting
       const token = await tx.token.findFirst({

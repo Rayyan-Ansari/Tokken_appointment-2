@@ -13,6 +13,7 @@ import { PatientDashboard } from './pages/patient/PatientDashboard';
 import { BookAppointment } from './pages/patient/BookAppointment';
 import { DoctorDashboard } from './pages/doctor/DoctorDashboard';
 import { AdminDashboard } from './pages/admin/AdminDashboard';
+import { Settings } from './pages/Settings';
 
 // Components
 import { ProtectedRoute } from './components/ProtectedRoute';
@@ -53,6 +54,14 @@ const AppRoutes: React.FC = () => {
           </ProtectedRoute>
         }
       />
+      <Route
+        path="/patient/settings"
+        element={
+          <ProtectedRoute allowedRoles={['patient']}>
+            <Settings />
+          </ProtectedRoute>
+        }
+      />
 
       {/* Protected Routes - Doctor */}
       <Route
@@ -63,6 +72,14 @@ const AppRoutes: React.FC = () => {
           </ProtectedRoute>
         }
       />
+      <Route
+        path="/doctor/settings"
+        element={
+          <ProtectedRoute allowedRoles={['doctor']}>
+            <Settings />
+          </ProtectedRoute>
+        }
+      />
 
       {/* Protected Routes - Admin */}
       <Route
@@ -70,6 +87,14 @@ const AppRoutes: React.FC = () => {
         element={
           <ProtectedRoute allowedRoles={['admin']}>
             <AdminDashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/settings"
+        element={
+          <ProtectedRoute allowedRoles={['admin']}>
+            <Settings />
           </ProtectedRoute>
         }
       />

@@ -117,10 +117,13 @@ export const adminService = {
                 email: true,
                 fullName: true,
                 phone: true,
+                dob: true,
+                sex: true,
                 specialization: true,
                 qualification: true,
                 yearsExperience: true,
                 licenseNumber: true,
+                licenseDocumentPath: true,
                 createdAt: true
             },
             orderBy: {
@@ -168,6 +171,9 @@ export const adminService = {
                 email: true,
                 fullName: true,
                 phone: true,
+                dob: true,
+                sex: true,
+                address: true,
                 createdAt: true
             },
             orderBy: {
